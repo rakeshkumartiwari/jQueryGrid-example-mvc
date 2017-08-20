@@ -1,0 +1,125 @@
+﻿
+<div>
+    <table id="grid"></table>
+    <div id="pager"></div>
+</div>
+
+
+<script>
+    function defineGrid() {
+        $("#grid").jqGrid({
+            datatype: "local", //<-- "local" tells jqGrid not to try and get the data itself
+            height: 'auto',
+            autowidth: true,
+            forceFit: true,
+            colNames: ['Id', 'Holiday Name', 'Holiday Type', 'Holiday Date'],
+            colModel: [
+                {
+                    name: 'Id',
+                    index: 'Id',
+                    key: true,
+                    jsonmap: 'Id'
+                },
+                {
+                    name: 'HolidayName',
+                    index: 'HolidayName',
+                    jsonmap: "HolidayName"
+                },
+                {
+                    name: 'HolidayType',
+                    index: 'HolidayType',
+                    jsonmap: 'HolidayType'
+                },
+                {
+                    name: 'HolidayDate',
+                    index: 'HolidayDate',
+                    formatter: 'date',
+                    formatoption: { srcformat: 'd/m/y', newformat: 'd/m/y' },
+                    jsonmap: 'HolidayDate'
+                }
+            ],
+            multiselect: false,
+            caption: 'List of Holidays',
+            emptyrecords: 'No Records to Display',
+            gridview: true,// !!! improve the performance
+            pager: 'pager'
+        });
+    }
+
+    function getDataFromAjax() {
+        return $.get('/Holiday/GetHolidays');
+    }
+    function bindGrid(data) {
+
+        console.log(data);
+        var gData = {
+            rows: data
+        }
+
+
+        $("#grid")[0].addJSONData(gData);
+
+    }
+    function onloadFail() {
+        alert("Failed")
+    }
+    $(document).ready(function () {
+
+
+        defineGrid();
+        getDataFromAjax().done(bindGrid).fail(onloadFail);
+
+
+
+
+        //var colModel = [];
+        //$.get("/Holiday/GetHolidays")
+        //    .done(function (data) {
+        //        console.log(data);
+        //        $.each(data, function (i, v) {
+        //            colModel.push({
+        //                name: v,
+        //                key: true,
+        //                index: v
+
+        //            })
+
+        //        });
+        //    })
+        //    .fail(function () { alert('failed') });
+
+        //$("#grid").jqGrid({
+
+        //    url: "/Holiday/GetHolidays",
+        //    datatype: 'json',
+        //    mtype: 'GET',
+        //    colNames: ["Id", "HolidayType", "HolidayName", "HolidayDate"],
+
+        //    colModel: [
+        //        { name: "Id", key: true, index: 'Id'},
+        //        { name: "HolidayType", index: 'HolidayType'},
+        //        { name: "HolidayName", index: 'HolidayName'},
+        //        { name: "HolidayDate", index: 'HolidayDate'},
+        //    ],
+
+        //    height: 'auto',
+        //    autowidth: 'true',
+        //    rowNum: 20,
+        //    LoadOnce: true,
+        //    rowList: [10, 20, 30],
+        //    pager: 'pager',
+        //    sortName: 'id',
+        //    viewrecords: true,
+        //    sortorder: 'asc',
+
+        //    caption: 'List of Holidays',
+        //    emptyrecords: 'No Records to Display',
+        //    jsonreader: {
+        //        repeatitems: false,
+        //        id: "0",
+        //    },
+        //    multiselect: false,
+
+        //})
+    });
+</script>
